@@ -1,14 +1,7 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
- * Description of phpclass watherforcast
- *
+ * Für die 5 Tages Wetter Vorhersage
  * @author steve
  */
 class weatherforcast {
@@ -64,7 +57,7 @@ class weatherforcast {
         $this->mOwmResult = json_decode($result, true); //JSON Antwort von OpenWatherMap wird als Array gespeichert
     }
 
-     private function sunriseApiCall() {
+    private function sunriseApiCall() {
         //curl wird ausgeführt	
         $ch = curl_init(); //  curl wird initalisiert
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // SSL verifizierung wird deaktiviert
@@ -74,10 +67,8 @@ class weatherforcast {
         curl_close($ch); //curl wird geschlossen
         $this->mSunriseResult = json_decode($result, true); //JSON Antwort von OpenWatherMap wird als Array gespeichert
     }
-    
-    
-    
-//Wertzuweisung der Varablen D0
+
+//Wertzuweisung der Varablen
     private function value($pDay) {
         $this->mWeatherMain = $this->mOwmResult['list'][$pDay]['weather'][0]["main"];
         $this->mWeatherDescription = $this->mOwmResult['list'][$pDay]['weather'][0]["description"];
@@ -92,18 +83,16 @@ class weatherforcast {
         $this->mCountry = $this->mOwmResult['city']['country'];
         $this->mCity = $this->mOwmResult['city']['name'];
         $this->mIcon = $this->mOwmResult['list'][$pDay]['weather'][0]["icon"];
-        $this->mSunrise=$this->mSunriseResult['results']['sunrise'];
-        $this->mSunset=$this->mSunriseResult['results']['sunset'] ;
-        
-    }
+        $this->mSunrise = $this->mSunriseResult['results']['sunrise'];
+        $this->mSunset = $this->mSunriseResult['results']['sunset'];
+    }//End API Abfrage
 
-//End API Abfrage
+
 
     public function getForcastD1() {
         $date = date('Y-m-d', strtotime('+1 days'));
-        $forcast = new weatherforcast($this->mCoordLat, $this->mCoordLon, $this->mUnit, $date );
+        $forcast = new weatherforcast($this->mCoordLat, $this->mCoordLon, $this->mUnit, $date);
         $forcast->value(0);
-        
         return $forcast;
     }
 
@@ -123,14 +112,14 @@ class weatherforcast {
 
     public function getForcastD4() {
         $date = date('Y-m-d', strtotime('+4 days'));
-        $forcast = new weatherforcast($this->mCoordLat, $this->mCoordLon, $this->mUnit,$date);
+        $forcast = new weatherforcast($this->mCoordLat, $this->mCoordLon, $this->mUnit, $date);
         $forcast->value(24);
         return $forcast;
     }
 
     public function getForcastD5() {
         $date = date('Y-m-d', strtotime('+5 days'));
-        $forcast = new weatherforcast($this->mCoordLat, $this->mCoordLon, $this->mUnit,$date);
+        $forcast = new weatherforcast($this->mCoordLat, $this->mCoordLon, $this->mUnit, $date);
         $forcast->value(32);
         return $forcast;
     }
@@ -199,13 +188,15 @@ class weatherforcast {
     public function getCountry() {
         return $this->mCountry;
     }
-public function getSunrise(){
-    return $this->mSunrise;
-}
 
-public function getSunset(){
-    return $this->mSunset;
-}
+    public function getSunrise() {
+        return $this->mSunrise;
+    }
+
+    public function getSunset() {
+        return $this->mSunset;
+    }
+
 }
 
 //End Class weatherforcast

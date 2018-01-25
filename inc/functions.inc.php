@@ -6,6 +6,8 @@
  * @license: GNU GPLv3
  */
 include_once("password.inc.php");
+include("phpclass wetaherinfo.php");
+include ("phpclass weatherforcast.php");
 
 /**
  * Checks that the user is logged in. 
@@ -91,4 +93,73 @@ function error($error_msg) {
 	include("templates/error.inc.php");
 	include("templates/footer.inc.php");
 	exit();
+}
+
+
+/**
+ * Aktualisiert den die Wetterkarte die geklickt wird
+ * @param type $id des zu prüfenden Datensatzes
+ * @param type $pdo
+ */
+function refreshData($id, $pdo) {
+//Aus db die Kordinaten, Einheit und Usernamen lesen
+    $statement = $pdo->prepare("Select coordlat, coordlon, unit FROM favorits WHERE id='" . $id . "'");
+    $result = $statement->execute();
+    $row = $statement->fetch();
+
+
+//Neues Wetter Objekt erstellen
+    $WeatherObject = new weatherinfo($row["coordlat"], $row["coordlon"], $row["unit"]);
+
+    $weather = $WeatherObject->getWeatherDescription();
+    $temp = $WeatherObject->getMainTemperatur();
+    $maxtemp = $WeatherObject->getMainMaxTemp();
+    $mintemp = $WeatherObject->getMainMinTemp();
+    $pressure = $WeatherObject->getMainPressure();
+    $humidity = $WeatherObject->getMainHumidity();
+    $windspeed = $WeatherObject->getWindSpeed();
+    $icon = $WeatherObject->getWeatherIcon();
+    $datetime = date('Y-m-d H:i:s');
+    $sunrise = $WeatherObject->getSunrise();
+    $sunset = $WeatherObject->getSunset();
+
+//Daten in der Datenbank updaten 
+    $statement = $pdo->prepare("UPDATE favorits SET temperatur = :temperatur , datetime =:datum, icon=:icon,mintemp=:mintemp, maxtemp=:maxtemp, pressure=:pressure, humidity=:humidity, windspeed=:windspeed WHERE id=:id");
+    $statement->execute(array('temperatur' => $temp, 'id' => $id, 'datum' => $datetime, 'icon' => $icon, 'mintemp' => $mintemp, 'maxtemp' => $maxtemp, 'pressure' => $pressure, 'humidity' => $humidity, 'windspeed' => $windspeed));
+
+
+    if ($statement) {
+        echo 'Eintrag erfolgreich hinzugefügt. Sie werden automatisch weitergeleitet <a href="index.php">Zum Login</a>';
+        $showFormular = false;
+    } else {
+        echo "$result Beim Abspeichern ist leider ein Fehler aufgetreten<br>'";
+        echo "SQL Error <br />";
+        echo $statement->queryString . "<br />";
+        echo $statement->errorInfo()[2];
+    }
+}
+
+/**
+ * Überprüft ob das Datum älter als die gesetzte Variabel
+ * @param type $pDate Datum zum überprüfen
+ * @return boolean
+ */
+function checkDateTime($pDate) {
+    $timeCompare = 3;
+    $nowtime = date("Y-m-d H:i:s");
+    $date = date('Y-m-d H:i:s', strtotime($nowtime . " -$timeCompare hours"));
+
+    if ($date > $pDate) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
+
+function setUnit() {
+    if ($_POST["metricswitch"] == 'true') {
+        return 'imperial';
+    } else {
+        return 'metric';
+    }
 }

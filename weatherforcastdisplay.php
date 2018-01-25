@@ -8,28 +8,41 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/6.0.4/highcharts.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/6.0.4/js/modules/series-label.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/6.0.4/js/modules/exporting.js"></script>
         <style>
-
             #weathercontainer{
 
                 align-content: center;
                 align-items: center;
             }
-            #graph{
+            #container{
+                width: 50%;
+                height: 200px;
 
             }
+
+
+            .highcharts-background {
+                fill: #767f8e;
+                stroke: #a4edba;
+                stroke-width: 2px;
+            }
+
         </style>
 
 
     </head>
+
+
+
+
     <body>
         <?php
         session_start();
         require_once("inc/config.inc.php");
         require_once("inc/functions.inc.php");
-        include("phpclass wetaherinfo.php");
-        include ("phpclass weatherforcast.php");
         include("lib/inc/chartphp_dist.php");
         ?>
 
@@ -37,12 +50,8 @@
         <?php
         setlocale(LC_TIME, "de_DE.utf8");
         $user = check_user();
+        $unit = setUnit();
 
-        if ($_POST['metricswitch'] == 'flase') {
-            $unit = 'metric';
-        } else {
-            $unit = 'imperial';
-        }
 
 
 //Id des Ortes wird vom Angeklickten Objekt geladen
@@ -65,49 +74,18 @@
 
 
 //Daten für Grafik
-        $line_chart_data = array(
-            array(
-                array($tage[$tag + 1], $forcastd1->getMainMinTemp()),
-                array($tage[$tag + 2], $forcastd2->getMainMinTemp()),
-                array($tage[$tag + 3], $forcastd3->getMainMinTemp()),
-                array($tage[$tag + 4], $forcastd4->getMainMinTemp()),
-                array($tage[$tag + 5], $forcastd5->getMainMinTemp())),
-            array(
-                array($tage[$tag + 1], $forcastd1->getMainMaxTemp()),
-                array($tage[$tag + 2], $forcastd2->getMainMaxTemp()),
-                array($tage[$tag + 3], $forcastd3->getMainMaxTemp()),
-                array($tage[$tag + 4], $forcastd4->getMainMaxTemp()),
-                array($tage[$tag + 5], $forcastd5->getMainMaxTemp())),
-        );
 
+        $mintemp = array($forcastd1->getMainMinTemp(), $forcastd2->getMainMinTemp(), $forcastd3->getMainMinTemp(), $forcastd4->getMainMinTemp(), $forcastd5->getMainMinTemp());
+        $maxtemp = array($forcastd1->getMainMaxTemp(), $forcastd2->getMainMaxTemp(), $forcastd3->getMainMaxTemp(), $forcastd4->getMainMaxTemp(), $forcastd5->getMainMaxTemp());
 
-        $p = new chartphp();
-
-// data array is populated from example data file
-        $p->data = $line_chart_data;
-        $p->chart_type = "line";
-
-
-// Common Options
-        $p->title = "Vorhersage";
-        $p->xlabel = "Tage";
-        $p->ylabel = "Temperatur in °C";
-        $p->series_label = array("MinTemp", "Maxtemp");
-        $p->width = "100%";
-        $p->height = "200px";
-        $p->color = "soft"; // Choices are "metro" "soft"
-        $out = $p->render('c1');
-
-
-//Ausgabe die zurückgegeben wird 
-
-
+        echo '<div id="container"></div>'; //Div in dem die Grafik angezeigt wird
+//Ausgabe die zurückgegeben wird und in Butto
         echo'  <div class="container-fluid">
             <div id="closecross">  <img src="/images/cross.png" alt="closecross" height="50"></div>
             
             <div class="row" >
                 <div class="col-sm-6 col-sm-offset-3" id="graph">
-                   ' . $out . ' 
+                ^
                 </div>
             </div>
             <div class="row" >
@@ -154,17 +132,78 @@
         ?>
 
 
+        <script type="text/javascript">//Graifk
 
 
+            var mintempd1 = parseInt(<?php echo $mintemp[0]; ?>);
+            var mintempd2 = parseInt(<?php echo $mintemp[1]; ?>);
+            var mintempd3 = parseInt(<?php echo $mintemp[2]; ?>);
+            var mintempd4 = parseInt(<?php echo $mintemp[3]; ?>);
+            var mintempd5 = parseInt(<?php echo $mintemp[4]; ?>);
 
 
-        <script>
+            var maxtempd1 = parseInt(<?php echo $maxtemp[0]; ?>);
+            var maxtempd2 = parseInt(<?php echo $maxtemp[1]; ?>);
+            var maxtempd3 = parseInt(<?php echo $maxtemp[2]; ?>);
+            var maxtempd4 = parseInt(<?php echo $maxtemp[3]; ?>);
+            var maxtempd5 = parseInt(<?php echo $maxtemp[4]; ?>);
+
+            Highcharts.chart('container', {
+
+                title: {
+                    text: 'Wettervorhersagee über 5 Tage'
+                },
+
+                yAxis: {
+                    title: {
+                        text: 'Grad Celsius'
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle'
+                },
+
+                xAxis: {
+                    categories: ['<?php echo $tage[$tag + 1]; ?>', '<?php echo $tage[$tag + 2]; ?>', '<?php echo $tage[$tag + 3]; ?>', '<?php echo $tage[$tag + 4]; ?>', '<?php echo $tage[$tag + 5]; ?>']
+                },
+
+                series: [{
+                        name: 'MinTemp',
+                        //data: [24916, 24064, 29742, 29851, 32490, 30282, 38121, 40434]
+                        data: [mintempd1, maxtempd2, mintempd3, mintempd4, mintempd5]
+                    }, {
+                        name: 'MaxTemp',
+                        data: [maxtempd1, maxtempd2, maxtempd3, maxtempd4, maxtempd5]
+                    }],
+
+                responsive: {
+                    rules: [{
+                            condition: {
+                                maxWidth: 500
+                            },
+                            chartOptions: {
+                                legend: {
+                                    layout: 'horizontal',
+                                    align: 'center',
+                                    verticalAlign: 'bottom'
+                                }
+                            }
+                        }]
+                }
+
+            });
+        </script>
+        <script>//Schliesskreutz von Container
             //Wird gebraucht für den Schliessen Button
             $("#closecross").click(function (e) {
                 $(this).closest(".bottomStuff")
                         .toggleClass("active");
 
             });
+
+
         </script>
 
 

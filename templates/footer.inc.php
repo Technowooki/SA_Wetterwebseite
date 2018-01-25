@@ -8,14 +8,6 @@
  * @license: GNU GPLv3
  */
 ?> 
- <hr>
-  <div class="container">
-  	<footer>
-        <p>Powered by <a href="http://www.php-einfach.de" target="_blank">PHP-Einfach.de</a></p>
-      </footer>
-   </div> 
-
-
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->

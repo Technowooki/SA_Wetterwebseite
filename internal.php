@@ -93,9 +93,3 @@ include("templates/header.inc.php");
     ?>
 
 </div>
-
-
-
-<?php
-include("templates/footer.inc.php")
-?>

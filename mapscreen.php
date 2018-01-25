@@ -149,12 +149,12 @@ include("templates/header.inc.php")
             }
 
 
-            
+
             .bottomStuff {
                 position: fixed;
                 bottom: -70%;
                 height: 450px;
-              background-color: rgba(30,144,255,0.8);
+                background-color: rgba(30,144,255,0.8);
                 transition: bottom .5s;
                 width:100%;
             }
@@ -180,11 +180,10 @@ include("templates/header.inc.php")
                     <form action="controller.php" method="post">
 
                         <input id="address" type="text" name="address" value="ortschaft eingeben">
-                        <input type="submit" value="Add to favorits!">
-                        <input id="coordlon" type="text" name="Coordlon" value="Coordlon ">
+                        <input id ="addtofavorits" type="button" value="Add to favorits!">
+                        <input id="coordlon" type="hidden" name="Coordlon" value="Coordlon ">
                         <input id="submit" type="button" value="search">
-                        <input id="coordlat" type="text" name="Coordlat" value="Coordlat">
-
+                        <input id="coordlat" type="hidden" name="Coordlat" value="Coordlat">
                         <input id="location" type="button" value="getyourlcation">
 
 
@@ -195,16 +194,18 @@ include("templates/header.inc.php")
                 </div>
 
                 <div class="panel-body-favorits" id="favorites">
-                    <?php include("displaydbcontent.php"); ?>
+                    <?php include("favorits.php"); ?>
                 </div>
             </div> <!--end Div Panelgrooup -->
 
             <div id="map"></div>
 
             <script>
+                //Deklaration der Variabeln
                 var map;
                 var markers = [];
                 var geocoder;
+                var infowindow;
 
                 function initMap() {
                     map = new google.maps.Map(document.getElementById('map'), {
@@ -212,9 +213,11 @@ include("templates/header.inc.php")
                         center: {lat: 40.731, lng: -73.997}
                     });
                     geocoder = new google.maps.Geocoder;
-                    var infowindow = new google.maps.InfoWindow;
+                    infowindow = new google.maps.InfoWindow;
 
 
+
+                    //Deklaration der Event Listener
                     map.addListener('click', function (e) {
 
                         var clickedlat = e.latLng.lat();
@@ -228,6 +231,11 @@ include("templates/header.inc.php")
                         geocodeLatLng(geocoder, map, infowindow, latarray);
                     });//End Map Clicklistener
 
+                    document.getElementById('address').addEventListener('blur', function () {
+                        geocodeAddress(geocoder, map, infowindow);
+                    });//Wenn das Adressfeld verlassen wird, wird automatisch gesucht
+
+
                     document.getElementById('submit').addEventListener('click', function () {
                         geocodeAddress(geocoder, map, infowindow);
                     });//End Button Clicklistener
@@ -236,9 +244,15 @@ include("templates/header.inc.php")
                         geolocation(map, infowindow);
                     });//End Button Clicklistener
 
+                    document.getElementById('addtofavorits').addEventListener('click', function () {
+                        addtofavorits();
+                    });//End Button Clicklistener
                 }//End initMap
 
-                // Adds a marker to the map and push to the array.
+                /**
+                 *  Fügt den Marker auf der Karte und im Array ein
+                 * @param {type} location 
+                 */
                 function addMarker(location) {
                     var marker = new google.maps.Marker({
                         position: location,
@@ -247,6 +261,10 @@ include("templates/header.inc.php")
                     markers.push(marker);
                 }
 
+                /**
+                 * 5 Tages Wetter Vorhersage wird aufgeklappt
+                 * @param {type} e event
+                 */
                 function details(e) {
                     $.ajax({
                         type: "POST",
@@ -254,12 +272,11 @@ include("templates/header.inc.php")
                         data: {
                             id: e.id,
                             username: "<?php echo ($user['vorname']); ?>",
-                            metricswitch:   document.getElementById('togBtn').checked
+                            metricswitch: document.getElementById('togBtn').checked,
 
                         },
                         success: function (html) {
                             $(".bottomStuff")
-
                                     .html(html)
                                     .toggleClass("active");
                         }
@@ -268,40 +285,89 @@ include("templates/header.inc.php")
 
                 }
 
-                //Setzt ausgewähltes Element als Homebasis
+                /**
+                 *Geklickter Favorit wird als Homebasis gesetzt und bleibt zu oberst
+                 * @param {type} e event
+                 */
                 function home(e) {
                     $.ajax({
                         type: "POST",
-                        url: 'test.php',
+                        url: 'controller.php',
                         data: {action: 'homebase',
                             id: e.id,
                             username: "<?php echo ($user['vorname']); ?>"
 
                         },
                         success: function (html) {
-                            $('.panel-body-favorits').load('displaydbcontent.php');
+                            $('.panel-body-favorits').load('favorits.php');
                             alert("Neue Homebase wurde gesetzt");
                         }
                     });
                 }
 
-
-
+                /**
+                 * Geklickter Favorit wird entfernt
+                 */
                 function remove(e) {
                     $.ajax({
                         type: "POST",
-                        url: 'test.php',
+                        url: 'controller.php',
                         data: {action: 'remove',
                             id: e.id,
                             username: "<?php echo ($user['vorname']); ?>"
 
                         },
                         success: function (html) {
-                            $('.panel-body-favorits').load('displaydbcontent.php');
+                            $('.panel-body-favorits').load('favorits.php');
                             alert("Favorit wurde entfernt");
                         }
                     });
                 }
+
+                /**
+                 * Geklickter Favorit wird aktualisiert
+                 * @param {type} e
+                 */
+                function refresh(e) {
+                    $.ajax({
+                        type: "POST",
+                        url: 'controller.php',
+                        data: {action: 'refresh',
+                            id: e.id,
+                            username: "<?php echo ($user['vorname']); ?>"
+
+                        },
+                        success: function (html) {
+                            $('.panel-body-favorits').load('favorits.php');
+                            alert("Favorit wurde aktualisiert");
+                        }
+                    });
+                }
+
+                /**
+                 * Ortschaft wird zu Favoriten hinzugefügt
+                 * @param {type} e
+                 */
+                function addtofavorits(e) {
+                    $.ajax({
+                        type: "POST",
+                        url: 'controller.php',
+                        data: {action: 'addtofavorits',
+                            username: "<?php echo ($user['vorname']); ?>",
+                            coordlat: document.getElementById("coordlat").value,
+                            coordlon: document.getElementById("coordlon").value,
+                            metricswitch: document.getElementById('togBtn').checked,
+                            address: document.getElementById("address").value
+                        },
+                        success: function (html) {
+                            $('.panel-body-favorits').load('favorits.php');
+                            alert("Favorit wurde aktualisiert");
+                        }
+                    });
+                }
+
+
+
                 // Sets the map on all markers in the array.
                 function setMapOnAll(map) {
                     for (var i = 0; i < markers.length; i++) {
@@ -314,18 +380,24 @@ include("templates/header.inc.php")
                     setMapOnAll(null);
                 }
 
-                // Shows any markers currently in the array.
+                // Zeigt alle Marker in Array
                 function showMarkers() {
                     setMapOnAll(map);
                 }
 
-                // Deletes all markers in the array by removing references to them.
+                // Löscht alle Markter
                 function deleteMarkers() {
                     clearMarkers();
                     markers = [];
                 }
-
-                function geocodeLatLng(geocoder, map, infowindow, latarray) { //Array mit lat und lng wird übergeben und infoWindow mit Ortschaft und Koordinaten wird erstellt
+                /**
+                 * Koordinaten werden in Array übergeben und Marker wird plaziert
+                 * @param {type} geocoder
+                 * @param {type} map
+                 * @param {type} infowindow
+                 * @param {type} latarray
+                 */
+                function geocodeLatLng(geocoder, map, infowindow, latarray) {
                     var latlng = {lat: parseFloat(latarray[0]), lng: parseFloat(latarray[1])};
                     deleteMarkers();
                     geocoder.geocode({'location': latlng}, function (results, status) {
@@ -349,8 +421,15 @@ include("templates/header.inc.php")
                     });
                 }//End goecodeLatLng function
 
-                function geocodeAddress(geocoder, resultsMap, infowindow) { //Ortschaft wird gesucht und Marker auf Karte platziert
+                /**
+                 * Ortschaft wird gesucht und Marker auf Karte platziert
+                 * @param {type} geocoder
+                 * @param {type} resultsMap
+                 * @param {type} infowindow
+                 */
+                function geocodeAddress(geocoder, resultsMap, infowindow) {
                     var address = document.getElementById('address').value;
+                    deleteMarkers();
                     geocoder.geocode({'address': address}, function (results, status) {
                         if (status === 'OK') {
                             resultsMap.setCenter(results[0].geometry.location);
@@ -360,6 +439,7 @@ include("templates/header.inc.php")
                                 map: resultsMap,
                                 position: results[0].geometry.location
                             });
+                            markers.push(marker);
                             infowindow.setContent(address + "<br>" + results[0].geometry.location);
                             infowindow.open(map, marker);
                         } else {
@@ -368,8 +448,14 @@ include("templates/header.inc.php")
                     });
                 }//End geocodeLatLng function
 
-                function geolocation(map, infoWindow) {//Findet den aktuellen Standort
 
+                /**
+                 * Findet den aktuellen Standort, muss im Browser erlaubt sein
+                 * @param {type} map
+                 * @param {type} infoWindow
+                 */
+                function geolocation(map, infoWindow) {//Findet den aktuellen Standort
+                    deleteMarkers();
                     geocoder = new google.maps.Geocoder;
                     var infowindow = new google.maps.InfoWindow;
                     if (navigator.geolocation) {

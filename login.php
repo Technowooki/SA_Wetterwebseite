@@ -70,8 +70,3 @@ if(isset($error_msg) && !empty($error_msg)) {
 </form>
      <a href="passwortvergessen.php">Passwort vergessen</a>
 </div> <!-- /container -->
- 
-
-<?php 
-include("templates/footer.inc.php")
-?>
