@@ -4,15 +4,9 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/xampp/htdocs/weatherforcastdisplay.php</file>
-            <file>file:/C:/xampp/htdocs/inc/functions.inc.php</file>
-            <file>file:/C:/xampp/htdocs/settings.php</file>
             <file>file:/C:/xampp/htdocs/mapscreen.php</file>
             <file>file:/C:/xampp/htdocs/favorits.php</file>
-            <file>file:/C:/xampp/htdocs/templates/footer.inc.php</file>
-            <file>file:/C:/xampp/htdocs/internal.php</file>
-            <file>file:/C:/xampp/htdocs/login.php</file>
-            <file>file:/C:/xampp/htdocs/graph.php</file>
-            <file>file:/C:/xampp/htdocs/controller.php</file>
+            <file>file:/C:/xampp/htdocs/phpclass%20weatherforcast.php</file>
         </group>
     </open-files>
 </project-private>

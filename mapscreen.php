@@ -63,7 +63,7 @@ include("templates/header.inc.php")
             }
             .box {
                 width: 330px;
-                height: 170px;
+                height: 195px;
                 background-color: #0C5D8A;
                 /*        background-color: transparent;*/
                 color: #fff;
@@ -153,7 +153,7 @@ include("templates/header.inc.php")
             .bottomStuff {
                 position: fixed;
                 bottom: -70%;
-                height: 450px;
+                height: 300px;
                 background-color: rgba(30,144,255,0.8);
                 transition: bottom .5s;
                 width:100%;
@@ -182,9 +182,10 @@ include("templates/header.inc.php")
                         <input id="address" type="text" name="address" value="ortschaft eingeben">
                         <input id ="addtofavorits" type="button" value="Add to favorits!">
                         <input id="coordlon" type="hidden" name="Coordlon" value="Coordlon ">
-                        <input id="submit" type="button" value="search">
+                        <input id="search" type="button" value="search">
                         <input id="coordlat" type="hidden" name="Coordlat" value="Coordlat">
-                        <input id="location" type="button" value="getyourlcation">
+                        <input id="erfolgreich" type="hidden" name="erfolgreich">
+                        <input id="location" type="button"  value="getyourlcation">
 
 
                         <label class="switch"><input type="checkbox" name="metricswitch" id="togBtn"><div class="slider round"></div></label>
@@ -206,6 +207,9 @@ include("templates/header.inc.php")
                 var markers = [];
                 var geocoder;
                 var infowindow;
+                var success;
+
+
 
                 function initMap() {
                     map = new google.maps.Map(document.getElementById('map'), {
@@ -231,12 +235,9 @@ include("templates/header.inc.php")
                         geocodeLatLng(geocoder, map, infowindow, latarray);
                     });//End Map Clicklistener
 
-                    document.getElementById('address').addEventListener('blur', function () {
-                        geocodeAddress(geocoder, map, infowindow);
-                    });//Wenn das Adressfeld verlassen wird, wird automatisch gesucht
 
 
-                    document.getElementById('submit').addEventListener('click', function () {
+                    document.getElementById('search').addEventListener('click', function () {
                         geocodeAddress(geocoder, map, infowindow);
                     });//End Button Clicklistener
 
@@ -245,9 +246,18 @@ include("templates/header.inc.php")
                     });//End Button Clicklistener
 
                     document.getElementById('addtofavorits').addEventListener('click', function () {
-                        addtofavorits();
+
+                        geocodeAddress(geocoder, map, infowindow);
+                        setTimeout(addtofavorits, 1000);
+
                     });//End Button Clicklistener
                 }//End initMap
+
+
+
+
+
+
 
                 /**
                  *  Fügt den Marker auf der Karte und im Array ein
@@ -266,6 +276,9 @@ include("templates/header.inc.php")
                  * @param {type} e event
                  */
                 function details(e) {
+                    document.getElementById("bottomStuff").style.backgroundColor = "#1a171b"; //ladekreis wird dargestellt
+                    $(".bottomStuff").empty().html('<img src="/images/ladekreis.gif" id="ladekreis" class="col-sm-2 col-sm-offset-5">');
+                    $(".bottomStuff").toggleClass("active");
                     $.ajax({
                         type: "POST",
                         url: 'weatherforcastdisplay.php',
@@ -276,14 +289,17 @@ include("templates/header.inc.php")
 
                         },
                         success: function (html) {
+                            document.getElementById("bottomStuff").style.backgroundColor = "rgba(30,144,255,0.8)";
                             $(".bottomStuff")
                                     .html(html)
-                                    .toggleClass("active");
+
                         }
                     });
 
 
                 }
+
+
 
                 /**
                  *Geklickter Favorit wird als Homebasis gesetzt und bleibt zu oberst
@@ -345,25 +361,31 @@ include("templates/header.inc.php")
                 }
 
                 /**
-                 * Ortschaft wird zu Favoriten hinzugefügt
+                 * Ortschaft wird zu Favoriten hinzugefügt, wenn sie existiert
                  * @param {type} e
                  */
                 function addtofavorits(e) {
-                    $.ajax({
-                        type: "POST",
-                        url: 'controller.php',
-                        data: {action: 'addtofavorits',
-                            username: "<?php echo ($user['vorname']); ?>",
-                            coordlat: document.getElementById("coordlat").value,
-                            coordlon: document.getElementById("coordlon").value,
-                            metricswitch: document.getElementById('togBtn').checked,
-                            address: document.getElementById("address").value
-                        },
-                        success: function (html) {
-                            $('.panel-body-favorits').load('favorits.php');
-                            alert("Favorit wurde aktualisiert");
-                        }
-                    });
+                    if (document.getElementById("erfolgreich").value === "Stimmt") {
+                        $.ajax({
+                            type: "POST",
+                            url: 'controller.php',
+                            data: {action: 'addtofavorits',
+                                username: "<?php echo ($user['vorname']); ?>",
+                                coordlat: document.getElementById("coordlat").value,
+                                coordlon: document.getElementById("coordlon").value,
+                                metricswitch: document.getElementById('togBtn').checked,
+                                address: document.getElementById("address").value
+                            },
+                            success: function (html) {
+                                $('.panel-body-favorits').load('favorits.php');
+                                alert("Favorit wurde aktualisiert");
+                            }
+                        });
+                    } else {
+                        alert("Favorit wurde nicht hinzugefügt, da keine Ortschaft gefunden wurde");
+                    }
+
+
                 }
 
 
@@ -402,8 +424,9 @@ include("templates/header.inc.php")
                     deleteMarkers();
                     geocoder.geocode({'location': latlng}, function (results, status) {
                         if (status === 'OK') {
-                            map.setCenter(latlng);
                             document.getElementById("address").value = results[2].formatted_address;
+                            map.setCenter(latlng);
+
                             if (results[1]) {
                                 var marker = new google.maps.Marker({
                                     position: latlng,
@@ -430,20 +453,23 @@ include("templates/header.inc.php")
                 function geocodeAddress(geocoder, resultsMap, infowindow) {
                     var address = document.getElementById('address').value;
                     deleteMarkers();
+
                     geocoder.geocode({'address': address}, function (results, status) {
                         if (status === 'OK') {
+                            document.getElementById("erfolgreich").value = "Stimmt";
                             resultsMap.setCenter(results[0].geometry.location);
                             document.getElementById("coordlat").value = results[0].geometry.location.lat();
                             document.getElementById("coordlon").value = results[0].geometry.location.lng();
-                            var marker = new google.maps.Marker({
-                                map: resultsMap,
-                                position: results[0].geometry.location
-                            });
-                            markers.push(marker);
-                            infowindow.setContent(address + "<br>" + results[0].geometry.location);
-                            infowindow.open(map, marker);
+
+                            var latarray = [results[0].geometry.location.lat(), results[0].geometry.location.lng()];
+
+                            //Funktion für die Namensauflösung wird aufgerufen
+                            geocodeLatLng(geocoder, map, infowindow, latarray);
+
+
                         } else {
-                            alert('Geocode was not successful for the following reason: ' + status);
+                            alert('Es konnte keine Ortschaft gefunden werden');
+                            document.getElementById("erfolgreich").value = "Falsch";
                         }
                     });
                 }//End geocodeLatLng function

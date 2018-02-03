@@ -34,7 +34,7 @@ while ($row = $statement->fetch()) {
          <img id=' . $row['id'] . ' src=/images/home.png height="25" width="25" onclick="home(this)">
          <img id=' . $row['id'] . ' src=/images/refresh.png height="25" width="25" onclick="refresh(this)">
 </td> 
-          <td rowspan="2"><img id="' . $row['id'] . '" src="/images/' . $row['icon'] . '.png" height="120" width="120" onclick="details(this)"> 
+          <td rowspan="2" style="cursor: pointer;"><img id="' . $row['id'] . '" src="/images/' . $row['icon'] . '.png" height="120" width="120" onclick="details(this)"> 
           </tr> 
           <tr> 
           <td colspan="2"> 
