@@ -102,6 +102,3 @@ if($showFormular) {
 
 ?>
 </div>
-<?php 
-include("templates/footer.inc.php")
-?>
