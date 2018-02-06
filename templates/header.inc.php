@@ -25,9 +25,12 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="mapscreen.php"><img id="logo" src="/images/logo.png" height="35" width="35"> </a>
+          
+            
+          
         </div>
         <?php if(!is_checked_in()): ?>
+          <a class="navbar-brand" href="login.php"><img id="logo" src="/images/logo.png" height="35" width="35"> </a>
         <div id="navbar" class="navbar-collapse collapse">
           <form class="navbar-form navbar-right" action="login.php" method="post">
 			<table class="login" role="presentation">
@@ -46,7 +49,6 @@
 					</tr>
 					<tr>
 						<td><label style="margin-bottom: 0px; font-weight: normal;"><input type="checkbox" name="angemeldet_bleiben" value="remember-me" title="Angemeldet bleiben"  checked="checked" style="margin: 0; vertical-align: middle;" /> <small>Angemeldet bleiben</small></label></td>
-						<td><small><a href="passwortvergessen.php">Passwort vergessen</a></small></td>
 						<td></td>
 					</tr>					
 				</tbody>
@@ -56,6 +58,7 @@
           </form>         
         </div><!--/.navbar-collapse -->
         <?php else: ?>
+        <a class="navbar-brand" href="mapscreen.php"><img id="logo" src="/images/logo.png" height="35"> </a>
         <div id="navbar" class="navbar-collapse collapse">
          <ul class="nav navbar-nav navbar-right">      
             <li><a href="settings.php">Einstellungen</a></li>

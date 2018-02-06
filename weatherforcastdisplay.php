@@ -44,7 +44,6 @@
         session_start();
         require_once("inc/config.inc.php");
         require_once("inc/functions.inc.php");
-        include("lib/inc/chartphp_dist.php");
 
         setlocale(LC_TIME, "de_DE.utf8");
         $user = check_user();

@@ -30,9 +30,9 @@ while ($row = $statement->fetch()) {
           <tr>
           
          <td rowspan="2" width="20px" class="buttonclick" >
-         <img id=' . $row['id'] . ' src=/images/remove.png height="25" width="25" onclick="remove(this)">
-         <img id=' . $row['id'] . ' src=/images/home.png height="25" width="25" onclick="home(this)">
          <img id=' . $row['id'] . ' src=/images/refresh.png height="25" width="25" onclick="refresh(this)">
+         <img id=' . $row['id'] . ' src=/images/home.png height="25" width="25" onclick="home(this)">
+         <img id=' . $row['id'] . ' src=/images/remove.png height="25" width="25" onclick="remove(this)">
 </td> 
           <td rowspan="2" style="cursor: pointer;"><img id="' . $row['id'] . '" src="/images/' . $row['icon'] . '.png" height="120" width="120" onclick="details(this)"> 
           </tr> 
