@@ -68,5 +68,4 @@ if(isset($error_msg) && !empty($error_msg)) {
      <form action="register.php" method="post">
 <button class="btn btn-lg btn-primary btn-block" type="submit">Registrieren</button>
 </form>
-     <a href="passwortvergessen.php">Passwort vergessen</a>
-</div> <!-- /container -->
+</div>

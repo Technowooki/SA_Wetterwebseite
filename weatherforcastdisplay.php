@@ -139,7 +139,7 @@
                 //initialisiert das Array mit den Tagen
                 var jarraydays =<?php echo json_encode($tage); ?>;
 
-                //Prüft welcher Buttpn geklikt wird
+                //Prüft welcher Button geklickt wird
                 switch (e.id) {
                     case "temp":
                         var jarraydata1 =<?php echo json_encode($mintemp); ?>;
