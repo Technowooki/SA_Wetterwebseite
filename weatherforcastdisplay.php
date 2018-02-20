@@ -13,7 +13,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/6.0.4/js/modules/exporting.js"></script>
         <style>
             #weathercontainer{
-
                 align-content: center;
                 align-items: center;
             }
@@ -24,15 +23,14 @@
             }
 
             .highcharts-background {
-                fill: #767f8e;
-                stroke: #a4edba;
+                fill: #0C5D8A;
+                stroke: #ffffff;
                 stroke-width: 2px;
             }
 
             .labels{
                 color:#f7f7f7;
             }
-
         </style>
     </head>
 
@@ -83,10 +81,10 @@
 
 //Div für Buttons
         echo '<div id="button-container" class="col-sm-3 col-sm-offset-4" >
-                <button id="wind" type="button" class="btn btn-info btn-sm" onclick="graph(this)">Windstärke</button>
-                <button id="temp" type="button" class="btn btn-info btn-sm" onclick="graph(this)">Temperatur</button>
-                <button id="feuchtigkeit" type="button" class="btn btn-info btn-sm" onclick="graph(this)">Luftfeuchigkeit</button>
-                <button id="pressure" type="button" class="btn btn-info btn-sm" onclick="graph(this)">Luftdruck</button>
+                <button id="wind" type="button" class="btn btn-primary btn-sm" onclick="graph(this)">Windstärke</button>
+                <button id="temp" type="button" class="btn btn-primary btn-sm" onclick="graph(this)">Temperatur</button>
+                <button id="feuchtigkeit" type="button" class="btn btn-primary btn-sm" onclick="graph(this)">Luftfeuchigkeit</button>
+                <button id="pressure" type="button" class="btn btn-primary btn-sm" onclick="graph(this)">Luftdruck</button>
         </div>';
 //Div in dem die Grafik angezeigt wird
         echo '<div id="container" class="col-sm-2 col-sm-offset-3"></div>'; 
