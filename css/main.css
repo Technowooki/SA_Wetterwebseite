@@ -8,6 +8,17 @@ body, html {
     margin: 5px;
 }
 
+@media screen and (min-width: 994px) {
+    #favorites{
+        position: fixed;
+        top: 250px;
+        bottom: 1%;
+        overflow-y: auto;
+        width: 360px;
+        margin: 5px;
+    }
+}
+
 #addtofavorits{
     margin-top: 5px;
     margin-bottom: 5px;
@@ -122,6 +133,7 @@ input:checked + .slider:after
     background-color: rgba(255,255,255,1);
     transition: bottom .5s;
     width:100%;
+    overflow-y: auto;
 }
 
 .bottomStuff.active {

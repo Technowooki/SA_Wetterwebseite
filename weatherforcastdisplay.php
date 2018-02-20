@@ -13,9 +13,11 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/6.0.4/js/modules/exporting.js"></script>
         <style>
             #weathercontainer{
-                align-content: center;
-                align-items: center;
+                font-weight: bold;
+                font-size: 14px;
+                color: #fff;
             }
+
             #container{
                 width: 50%;
                 height: 270px;
@@ -29,7 +31,17 @@
             }
 
             .labels{
-                color:#f7f7f7;
+                color:#ffffff;
+            }
+
+            .table.table-condensed tr th {
+                border-bottom: none;
+                border-top: none;
+            }
+
+            .table.table-condensed tr td {
+                border-bottom: none;
+                border-top: none;
             }
         </style>
     </head>
@@ -80,39 +92,117 @@
         $icon = array($forcastd1->getWeatherIcon(), $forcastd2->getWeatherIcon(), $forcastd3->getWeatherIcon(), $forcastd4->getWeatherIcon(), $forcastd5->getWeatherIcon());
 
 //Div für Buttons
-        echo '<div id="button-container" class="col-sm-3 col-sm-offset-4" >
+        echo '<div id="button-container" class="col-md-3 col-md-offset-4" >
                 <button id="wind" type="button" class="btn btn-primary btn-sm" onclick="graph(this)">Windstärke</button>
                 <button id="temp" type="button" class="btn btn-primary btn-sm" onclick="graph(this)">Temperatur</button>
                 <button id="feuchtigkeit" type="button" class="btn btn-primary btn-sm" onclick="graph(this)">Luftfeuchigkeit</button>
                 <button id="pressure" type="button" class="btn btn-primary btn-sm" onclick="graph(this)">Luftdruck</button>
         </div>';
 //Div in dem die Grafik angezeigt wird
-        echo '<div id="container" class="col-sm-2 col-sm-offset-3"></div>'; 
+        echo '<div id="container" class="col-md-2 col-md-offset-3"></div>';
 
         //Div für Vohersage
         echo '<div class="container-fluid">
-                <div id="closecross">  <img src="/images/cross.png" alt="closecross" height="50" style="cursor: pointer;"></div>
+                <div id="closecross">  <img src="/images/cross.png" alt="closecross" height="30" style="cursor: pointer;"></div>
                  <div class="row" >
-                    <div class="col-sm-6 col-sm-offset-3" id="graph"></div>
+                    <div class="col-md-6 col-md-offset-3" id="graph"></div>
                 </div>
             <div class="row" >';
         //For Schlaufe die alle Daten anzeigt
         for ($x = 0; $x <= 4; $x++) {
             if ($x == 0) {
-                echo '  <div class="col-sm-2 col-sm-offset-1" id="weathercontainer" >
-                <div class="day-name">' . $tage[$tag + $x + 1] . '</div>
-                    <img src="/images/' . $icon[$x] . '.png" alt="weathericon">
-                   <div class="top-right1"><img id="description icon" src="/images/windicon.png" height="30">' . $wind[$x] . ' km/h</div>
-                   <div class="top-right2"><img id="description icon" src="/images/minmax.png" height="20">' . $mintemp[$x] . ' / ' . $maxtemp[$x] . '</div>
-                   <div class="top-right3"><img id="description icon" src="/images/sunset.png" height="20">' . $sunrise[$x] . ' / ' . $sunset[$x] . '</p></div>
+                echo '  <div class="col-md-2 col-md-offset-1" id="weathercontainer" >
+                            <table class="table table-condensed table-borderless">
+                                <tbody>
+                                  <tr>
+                                    <td>
+                                    <div class="day-name">' . $tage[$tag + $x + 1] . '</div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                    <img src="/images/' . $icon[$x] . '.png" alt="weathericon" height="70">
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                    <img id="description icon" src="/images/windicon.png" height="30">
+                                    </td>
+                                    <td>
+                                    <div class="top-right1">' . $wind[$x] . ' km/h</div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                    <img id="description icon" src="/images/minmax.png" height="20">
+                                    </td>
+                                    <td>
+                                    <div class="top-right2">' . $mintemp[$x] . '</div>
+                                    </td>
+                                    <td>
+                                    <div class="top-right2">' . $maxtemp[$x] . '</div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                    <img id="description icon" src="/images/sunset.png" height="20">
+                                    </td>
+                                    <td>
+                                    <div class="top-right3">' . $sunrise[$x] . '</div>
+                                    </td>
+                                    <td>
+                                    <div class="top-right3">' . $sunset[$x] . '</div>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
                 </div>';
             } else {
-                echo '<div class="col-sm-2" id="weathercontainer">
-                <div class="day-name">' . $tage[$tag + $x + 1] . '</div>
-                    <img src="/images/' . $icon[$x] . '.png" alt="weathericon">
-                   <div class="top-right1"><img id="description icon" src="/images/windicon.png" height="30">' . $wind[$x] . ' km/h</div>
-                   <div class="top-right2"><img id="description icon" src="/images/minmax.png" height="20">' . $mintemp[$x] . ' / ' . $maxtemp[$x] . '</div>
-                   <div class="top-right3"><img id="description icon" src="/images/sunset.png" height="20">' . $sunrise[$x] . ' / ' . $sunset[$x] . '</p></div>
+                echo '<div class="col-md-2" id="weathercontainer">
+                        <table class="table table-condensed table-borderless">
+                                <tbody>
+                                  <tr>
+                                    <td>
+                                    <div class="day-name">' . $tage[$tag + $x + 1] . '</div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                    <img src="/images/' . $icon[$x] . '.png" alt="weathericon" height="70">
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                    <img id="description icon" src="/images/windicon.png" height="30">
+                                    </td>
+                                    <td>
+                                    <div class="top-right1">' . $wind[$x] . ' km/h</div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                    <img id="description icon" src="/images/minmax.png" height="20">
+                                    </td>
+                                    <td>
+                                    <div class="top-right2">' . $mintemp[$x] . '</div>
+                                    </td>
+                                    <td>
+                                    <div class="top-right2">' . $maxtemp[$x] . '</div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                    <img id="description icon" src="/images/sunset.png" height="20">
+                                    </td>
+                                    <td>
+                                    <div class="top-right3">' . $sunrise[$x] . '</div>
+                                    </td>
+                                    <td>
+                                    <div class="top-right3">' . $sunset[$x] . '</div>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
                 </div>';
             }
         }

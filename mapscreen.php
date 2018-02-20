@@ -208,7 +208,7 @@ include("templates/header.inc.php")
 
                                 },
                                 success: function (html) {
-                                    document.getElementById("bottomStuff").style.backgroundColor = "rgba(30,144,255,0.8)";
+                                    document.getElementById("bottomStuff").style.backgroundColor = "rgba(12,93,138,1)";
                                     $(".bottomStuff")
                                             .html(html)
 
