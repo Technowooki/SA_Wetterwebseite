@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-        <title>Loginscript</title>
+        <title>Weather App</title>
 
         <!-- Bootstrap core CSS -->
         <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -33,22 +33,7 @@
                         <form class="navbar-form navbar-right" action="login.php" method="post">
                             <table class="login" role="presentation">
                                 <tbody>
-                                    <tr>
-                                        <td>							
-                                            <div class="input-group">
-                                                <div class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></div>
-                                                <input class="form-control" placeholder="E-Mail" name="email" type="email" required>								
-                                            </div>
-                                        </td>
-                                        <td><input class="form-control" placeholder="Passwort" name="passwort" type="password" value="" required></td>
-                                        <td><button type="submit" class="btn btn-success">Login</button></td>
-                                        <td>    <a class="btn btn-success" href="register.php" role="button">Jetzt registrieren</a></td>
-
-                                    </tr>
-                                    <tr>
-                                        <td><label style="margin-bottom: 0px; font-weight: normal;"><input type="checkbox" name="angemeldet_bleiben" value="remember-me" title="Angemeldet bleiben"  checked="checked" style="margin: 0; vertical-align: middle;" /> <small>Angemeldet bleiben</small></label></td>
-                                        <td></td>
-                                    </tr>					
+                                   			
                                 </tbody>
                             </table>		
 
