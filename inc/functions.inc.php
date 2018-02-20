@@ -1,17 +1,13 @@
 <?php
 /**
- * A complete login script with registration and members area.
- *
- * @author: Nils Reimers / http://www.php-einfach.de/experte/php-codebeispiele/loginscript/
- * @license: GNU GPLv3
+*In diesem File werden Funktionen abgelegt, die immer wieder gebraucht werden
  */
 include_once("password.inc.php");
 include("phpclass wetaherinfo.php");
 include ("phpclass weatherforcast.php");
 
 /**
- * Checks that the user is logged in. 
- * @return Returns the row of the logged in user
+ *Gibt die Daten des angeneldeten Users wieder
  */
 function check_user() {
 	global $pdo;
@@ -54,14 +50,14 @@ function check_user() {
 }
 
 /**
- * Returns true when the user is checked in, else false
+ * Gibt True zurück wenn der user angemeldet ist
  */
 function is_checked_in() {
 	return isset($_SESSION['userid']);
 }
  
 /**
- * Returns a random string
+ * Gubt einen Zufalls String zurück
  */
 function random_string() {
 	if(function_exists('openssl_random_pseudo_bytes')) {

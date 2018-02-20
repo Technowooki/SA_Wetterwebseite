@@ -1,12 +1,14 @@
 <?php
+
 require_once("inc/config.inc.php");
 require_once("inc/functions.inc.php");
 ?>
 
 <?php
+
 /**
  * Diese Datei ist das Ziel der Ajax funktionen
-*/
+ */
 if ($_POST['action'] == 'remove') {//wenn der Remove Knopf gedrückt wird
     $statement = $pdo->prepare("SELECT id, username FROM favorits WHERE id='" . $_POST['id'] . "'");
     $result = $statement->execute();
@@ -15,18 +17,15 @@ if ($_POST['action'] == 'remove') {//wenn der Remove Knopf gedrückt wird
     if ($_POST['username'] == $row['username']) {//wenn der einzige user, dann wird der eintrag aus der db geläscht
         $statement = $pdo->prepare("DELETE FROM favorits WHERE id='" . $_POST['id'] . "'");
         $result = $statement->execute();
-        echo "stimmt";
     } else {//Username wird entfernt von der Datenbank
         //Username Feld wird aus DB gelesen und eingelogter user wird in String entfernt
         $subject = $row['username'];
         $search = $_POST['username'];
         $trimmed = str_replace($search, '', $subject);
-
 //Eingeloggter user wird aus DB von id entfernt
         $sql = "UPDATE favorits SET username = '" . $trimmed . "'  WHERE id='" . $_POST['id'] . "'";
         $statement = $pdo->prepare($sql);
         $result = $statement->execute();
-        echo "falsch";
     }//End else
 }//end if
 
@@ -81,7 +80,7 @@ if ($_POST['action'] == 'addtofavorits') {//wenn der Remove Knopf gedrückt wird
         $coordlon = $WeatherObject->getCoordLon();
         $country = $WeatherObject->getCountry();
         $icon = $WeatherObject->getWeatherIcon();
-        $username = $user['vorname'];
+        $username = $user['email'];
         $datetime = time();
         $sunrise = $WeatherObject->getSunrise();
         $sunset = $WeatherObject->getSunset();
@@ -107,7 +106,7 @@ if ($_POST['action'] == 'addtofavorits') {//wenn der Remove Knopf gedrückt wird
     } else {//Wenn der Eintrag schon vorhanden ist, wird geprüft ob der User schon einen Eintrag hat
         $unit = setUnit();
 
-        if (strpos($row['username'], $user['vorname']) !== false) {//Wenn der Username bereits vorhanden ist bei der ortschaft
+        if (strpos($row['username'], $user['email']) !== false) {//Wenn der Username bereits vorhanden ist bei der ortschaft
             if (checkDateTime($row['datetime']) == TRUE) {//Prüft das alter des Eintrags und aktualisiert ihn
                 refreshData($row['id'], $pdo); //Die Daten werden aktualisiert
             }
@@ -116,7 +115,7 @@ if ($_POST['action'] == 'addtofavorits') {//wenn der Remove Knopf gedrückt wird
             if (checkDateTime($row['datetime']) == TRUE) {
                 refreshData($row['id'], $pdo);
             } else {
-                $trimmed = $row['username'] . $user['vorname'];
+                $trimmed = $row['username'] . $user['email'];
                 $sql = "UPDATE favorits SET username = '" . $trimmed . "'  WHERE id='" . $row['id'] . "'";
                 $statement = $pdo->prepare($sql);
                 $result = $statement->execute();
@@ -126,7 +125,3 @@ if ($_POST['action'] == 'addtofavorits') {//wenn der Remove Knopf gedrückt wird
         }
     }
 }//end if
-
-
-
-//Setzt die Einheit auf °F oder °C

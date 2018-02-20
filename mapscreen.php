@@ -22,7 +22,7 @@ include("templates/header.inc.php")
             <div class="row">
                 <div class="col-md-4 col-md-push-8">
                     <div class="row">
-                        <form action="controller.php" method="post">
+                        <form  method="post">
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <div class="input-group">
@@ -67,6 +67,7 @@ include("templates/header.inc.php")
                         var success;
 
                         function initMap() {
+
                             map = new google.maps.Map(document.getElementById('map'), {
                                 zoom: 11,
                                 center: {lat: 47.478, lng: 8.301}
@@ -77,7 +78,6 @@ include("templates/header.inc.php")
                             var autocomplete = new google.maps.places.Autocomplete(input);
                             autocomplete.bindTo('bounds', map);
 
-                            var infowindow = new google.maps.InfoWindow();
                             var marker = new google.maps.Marker({
                                 map: map,
                                 anchorPoint: new google.maps.Point(0, -29)
@@ -90,7 +90,6 @@ include("templates/header.inc.php")
                                 if (!place.geometry) {
                                     // User entered the name of a Place that was not suggested and
                                     // pressed the Enter key, or the Place Details request failed.
-                                    window.alert("No details available for input: '" + place.name + "'");
                                     return;
                                 }
 
@@ -126,6 +125,19 @@ include("templates/header.inc.php")
 
                             geocoder = new google.maps.Geocoder;
                             infowindow = new google.maps.InfoWindow;
+
+                            /**
+                             * Deaktiviert den Enter Key vom Formular und gibt eine neue Belegung.
+                             */
+                            $(document).keypress(
+                                    function (event) {
+                                        if (event.which == '13') {
+                                            event.preventDefault();
+                                            geocodeAddress(geocoder, map, infowindow);
+                                        }
+                                    });
+
+
 
                             //Deklaration der Event Listener
                             map.addListener('click', function (e) {
@@ -191,7 +203,7 @@ include("templates/header.inc.php")
                                 url: 'weatherforcastdisplay.php',
                                 data: {
                                     id: e.id,
-                                    username: "<?php echo ($user['vorname']); ?>",
+                                    username: "<?php echo ($user['email']); ?>",
                                     metricswitch: document.getElementById('togBtn').checked,
 
                                 },
@@ -214,7 +226,7 @@ include("templates/header.inc.php")
                                 url: 'controller.php',
                                 data: {action: 'homebase',
                                     id: e.id,
-                                    username: "<?php echo ($user['vorname']); ?>"
+                                    username: "<?php echo ($user['email']); ?>"
 
                                 },
                                 success: function (html) {
@@ -233,7 +245,7 @@ include("templates/header.inc.php")
                                 url: 'controller.php',
                                 data: {action: 'remove',
                                     id: e.id,
-                                    username: "<?php echo ($user['vorname']); ?>"
+                                    username: "<?php echo ($user['email']); ?>"
 
                                 },
                                 success: function (html) {
@@ -253,7 +265,7 @@ include("templates/header.inc.php")
                                 url: 'controller.php',
                                 data: {action: 'refresh',
                                     id: e.id,
-                                    username: "<?php echo ($user['vorname']); ?>"
+                                    username: "<?php echo ($user['email']); ?>"
 
                                 },
                                 success: function (html) {
@@ -273,7 +285,7 @@ include("templates/header.inc.php")
                                     type: "POST",
                                     url: 'controller.php',
                                     data: {action: 'addtofavorits',
-                                        username: "<?php echo ($user['vorname']); ?>",
+                                        username: "<?php echo ($user['email']); ?>",
                                         coordlat: document.getElementById("coordlat").value,
                                         coordlon: document.getElementById("coordlon").value,
                                         metricswitch: document.getElementById('togBtn').checked,

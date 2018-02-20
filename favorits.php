@@ -19,7 +19,7 @@ while ($row = $statement->fetch()) {
     }
     //Prüft ob der Username in dem jeweiligen Datensatz vorhanden ist, wenn ja
     //wird der Datensatz als Favorit ausgegeben
-    if (strpos($row['username'], $user['vorname']) !== false) {
+    if (strpos($row['username'], $user['email']) !== false) {
         echo '<div class="rounded box"  >
           <table id="weather-table">
           <tr>
